@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rate Guard — hotel rates drop after you book</title>
+<meta name="description" content="Rate Guard watches hotel prices after you book and tells you when rebooking saves real money. Never books anything — you are always in control. Free to try.">
+<style>
+:root {
+  --rg-navy: #0B1F3A;
+  --rg-green: #17B26A;
+  --rg-amber: #F5A623;
+  --rg-red: #E5484D;
+  --rg-ink: #1C2430;
+  --rg-mist: #EEF1F5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: #fff; color: var(--rg-ink);
+  font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+main { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+section { margin: 56px 0; }
+h2 { font-size: 22px; line-height: 1.3; margin: 0 0 6px; letter-spacing: -0.02em; }
+.kicker { color: var(--rg-green); font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
+.sub { color: #5b6472; font-size: 14px; margin: 0 0 20px; }
+
+/* hero */
+.hero { background: var(--rg-navy); color: #fff; padding: 64px 0 56px; }
+.hero .kicker { color: #7de0a8; }
+.hero h1 { font-size: 40px; margin: 12px 0 4px; letter-spacing: -0.02em; }
+.tagline { color: #9fb2cf; font-weight: 600; letter-spacing: .04em;
+  font-size: 14px; margin: 0 0 18px; }
+.oneliner { font-size: 18px; line-height: 1.55; margin: 0 0 28px; color: #e8eef7; }
+.btn {
+  display: inline-block; background: var(--rg-green); color: #fff;
+  font-weight: 700; font-size: 16px; text-decoration: none;
+  padding: 14px 26px; border-radius: 12px;
+}
+.btn:hover { filter: brightness(1.06); }
+.heroplace { color: #8ea3c2; font-size: 12px; margin-top: 10px; }
+
+/* steps */
+.step { border: 1px solid #d9dfe8; border-radius: 14px;
+  background: var(--rg-mist); padding: 20px 22px; margin: 0 0 16px; }
+.step h3 { font-size: 16px; margin: 0 0 6px; }
+.step p { margin: 0; font-size: 15px; color: #3c4553; }
+.stepnum { color: var(--rg-green); font-weight: 700; margin-right: 6px; }
+
+/* the real deal-card mock (02-front-end §2, guard alert card) */
+.dealcard { background: #fff; border: 1px solid #d9dfe8; border-radius: 12px;
+  padding: 14px 16px; margin-top: 14px;
+  font: 13px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  white-space: pre-wrap; }
+.dealcard .drop { color: var(--rg-green); font-weight: 700; }
+.dealcard .save { color: var(--rg-green); font-weight: 700; }
+.dealbtns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+.dealbtns span { border: 1px solid #d9dfe8; border-radius: 8px;
+  padding: 5px 10px; font-size: 12px; color: var(--rg-ink); background: var(--rg-mist); }
+.dealbtns .primary { background: var(--rg-green); border-color: var(--rg-green);
+  color: #fff; font-weight: 600; }
+
+/* pricing */
+.plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 560px) { .plans { grid-template-columns: 1fr; } }
+.plan { border: 1px solid #d9dfe8; border-radius: 14px; padding: 20px 22px; }
+.plan.premium { border: 2px solid var(--rg-green); }
+.plan h3 { margin: 0; font-size: 16px; }
+.price { font-size: 26px; font-weight: 700; margin: 8px 0 2px; letter-spacing: -0.02em; }
+.price small { font-size: 14px; font-weight: 400; color: #5b6472; }
+.stars { display: inline-block; background: var(--rg-navy); color: #fff;
+  font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 10px;
+  margin: 6px 0 12px; }
+.plan ul { margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.plan li { padding: 5px 0; border-top: 1px solid var(--rg-mist); }
+.plan li:first-child { border-top: none; }
+.no { color: #98a1af; }
+.planfoot { font-size: 13px; color: #5b6472; margin: 14px 0 0; }
+
+/* FAQ */
+details { border-bottom: 1px solid #e3e8ee; padding: 4px 0; }
+details summary { cursor: pointer; font-weight: 600; font-size: 15px;
+  padding: 10px 0; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "›"; display: inline-block;
+  color: var(--rg-green); font-weight: 700; margin-right: 10px;
+  transform: rotate(90deg); }
+details[open] summary::before { transform: rotate(-90deg); }
+details p { margin: 4px 0 14px 26px; font-size: 15px; color: #3c4553; }
+
+/* ToS */
+.terms { border: 1px solid #d9dfe8; border-radius: 14px;
+  padding: 24px 26px; background: var(--rg-mist); }
+.terms h3 { font-size: 16px; margin: 18px 0 6px; }
+.terms h3:first-child { margin-top: 0; }
+.terms p { font-size: 14px; color: #3c4553; margin: 0 0 10px; }
+
+/* footer */
+footer { background: var(--rg-mist); border-top: 1px solid #d9dfe8;
+  padding: 32px 0 48px; margin-top: 64px; }
+footer p { font-size: 13px; color: #5b6472; margin: 0 0 10px; }
+footer .brandline { display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px; color: var(--rg-navy); font-weight: 700; }
+.footlink { color: var(--rg-navy); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <main>
+    <svg viewBox="0 0 64 64" width="72" height="72" role="img"
+         aria-label="Rate Guard mark — a shield carrying a price tag">
+      <!-- 04-design §2: rounded shield (two arcs + flat top), price tag in the
+           lower-right quadrant rotated -20°, string trailing off the shield edge -->
+      <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z"
+            fill="#0B1F3A"/>
+      <path d="M45 33 C52 29 55 22 54 15" stroke="#17B26A" stroke-width="1.6"
+            fill="none" stroke-linecap="round"/>
+      <g transform="rotate(-20 43 40)">
+        <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
+        <circle cx="43" cy="34.5" r="2.7" fill="#fff"/>
+      </g>
+    </svg>
+    <p class="kicker">Booked. Watched. Saved.</p>
+    <h1>Rate Guard</h1>
+    <p class="oneliner">Your booking isn&rsquo;t done when you pay. Rates drop after
+    you book &mdash; Rate Guard watches, and tells you when rebooking saves real
+    money.</p>
+    <a class="btn" href="https://t.me/rateguardian_bot">Open in Telegram &rarr;</a>
+    <p class="heroplace">Free tier, one watch · SG hotels &amp; SEA · never books anything</p>
+  </main>
+</div>
+
+<main>
+
+<section id="how-it-works">
+  <p class="kicker">How it works</p>
+  <h2>Three steps. No app to install.</h2>
+  <p class="sub">Everything happens in a Telegram chat &mdash; where your travel
+  plans already live.</p>
+  <div class="step">
+    <h3><span class="stepnum">1</span>Guard your booking</h3>
+    <p>Forward your hotel booking confirmation to the bot. It reads hotel, city,
+    dates and price &mdash; then discards the message itself. Only those four
+    facts are kept.</p>
+  </div>
+  <div class="step">
+    <h3><span class="stepnum">2</span>We watch the rate daily</h3>
+    <p>Rate Guard watches public hotel prices for your hotel and dates, sampled
+    every day. This is the same price engine behind the SG/SEA rate panel
+    (4,893 properties).</p>
+  </div>
+  <div class="step">
+    <h3><span class="stepnum">3</span>Rate drops &rarr; exact rebook math</h3>
+    <p>If rebooking saves real money &mdash; more than 5% and more than S$10
+    &mdash; you get the exact math and the cheapest link. You always cancel and
+    rebook yourself; Rate Guard never touches your reservation.</p>
+    <div class="dealcard">🛡️ RATE DROP — Shangri-La Rasa Sentosa
+📅 You booked: 12–15 Dec · 2 rooms
+
+Paid:     S$328/night
+Now:      S$289/night   <span class="drop">🔻S$39 (-12%)</span>
+
+✅ <span class="save">Cancel + rebook saves S$234 total</span>
+   (new 2-room total S$1,734 vs S$1,968 paid)<span class="dealbtns"><span class="primary">🔎 Rebook at Agoda</span><span>📌 Keep booking</span><span>🔁 Re-check</span></span></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <p class="kicker">Pricing</p>
+  <h2>Free to try. SG$49/year when it earns it.</h2>
+  <p class="sub">No monthly plan. No free trial of premium &mdash; the yearly
+  price is the honest one. Pay in-chat with Telegram Stars.</p>
+  <div class="plans">
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price">S$0 <small>forever</small></div>
+      <ul>
+        <li>1 active watch</li>
+        <li>Alerts batched &mdash; next 09:00 SGT daily digest</li>
+        <li>✅ Guard (post-booking rebook math)</li>
+        <li class="no">❌ Wedding mode</li>
+        <li class="no">❌ Weekly savings report</li>
+        <li>Manual &ldquo;re-check now&rdquo;: 1/day</li>
+        <li>✅ /savings ledger card</li>
+      </ul>
+    </div>
+    <div class="plan premium">
+      <h3>Premium</h3>
+      <div class="price">SG$49 <small>/year</small></div>
+      <span class="stars">★ 2,600 Stars · paid in-chat</span>
+      <ul>
+        <li>Unlimited watches <span class="no">(soft cap 10/user)</span></li>
+        <li>Instant alerts &mdash; pushed the moment a sweep detects the drop</li>
+        <li>✅ Guard (post-booking rebook math)</li>
+        <li>✅ Wedding mode (rooms × dates × budget)</li>
+        <li>✅ Weekly savings report (Mon 09:00 SGT)</li>
+        <li>Manual &ldquo;re-check now&rdquo;: 5/day</li>
+        <li>✅ /savings ledger card</li>
+      </ul>
+    </div>
+  </div>
+  <p class="planfoot">One-time yearly charge, no auto-renew (you get a renewal
+  nudge 7 days before expiry). 14-day no-questions refund: message the bot with
+  /refund in your first 14 days and the full SG$49 comes back the way you paid.
+  After 14 days, no refunds &mdash; cancel anytime and premium simply expires at
+  the paid-up date.</p>
+</section>
+
+<section id="faq">
+  <p class="kicker">FAQ</p>
+  <h2>What it does &mdash; and what it never does.</h2>
+  <details open>
+    <summary>Does Rate Guard book or change my reservation?</summary>
+    <p>Never. It watches prices and tells you. Cancelling and rebooking is
+    always your action, on your accounts.</p>
+  </details>
+  <details>
+    <summary>How accurate are the prices?</summary>
+    <p>They&rsquo;re real observed rates from public search, sampled daily &mdash;
+    but hotels/OTAs show different prices by moment, room, and device. Treat our
+    numbers as a strong signal, then verify at the link before you act.</p>
+  </details>
+  <details>
+    <summary>What do I forward?</summary>
+    <p>Any hotel booking confirmation text (email, app message). We read hotel,
+    city, dates and price, then discard the message itself &mdash; we keep only
+    those four facts.</p>
+  </details>
+  <details>
+    <summary>What if rates drop but the hotel charges cancellation fees?</summary>
+    <p>The rebook math shows gross savings only; check your rate&rsquo;s
+    cancellation terms before acting (we link them out; flexible rates are where
+    this shines).</p>
+  </details>
+  <details>
+    <summary>Free vs paid?</summary>
+    <p>Free: one watch, alerts batched daily. SG$49/yr: instant alerts, ten
+    watches, wedding mode, weekly savings report.</p>
+  </details>
+  <details>
+    <summary>How do I pay?</summary>
+    <p>Telegram Stars in-chat (2 taps). 14-day no-questions refund.</p>
+  </details>
+  <details>
+    <summary>Which hotels/cities?</summary>
+    <p>4,893 SG/SEA properties today; if yours is missing, /watch suggests the
+    closest matches and coverage grows weekly.</p>
+  </details>
+  <details>
+    <summary>Do you sell my data?</summary>
+    <p>No. We store your Telegram id, your watch facts, and your savings.
+    That&rsquo;s the entire database of &ldquo;you&rdquo;.</p>
+  </details>
+  <details>
+    <summary>Why a Telegram bot?</summary>
+    <p>Because your rates belong where your group chats already are &mdash; no
+    app to install, nothing to remember.</p>
+  </details>
+  <details>
+    <summary>What it is NOT</summary>
+    <p>Not a booking agent, not a chat concierge, not price-guarantee insurance.
+    A watchful friend with a spreadsheet.</p>
+  </details>
+</section>
+
+<section id="terms">
+  <p class="kicker">The fine print, in plain words</p>
+  <h2>Terms of Service &amp; Privacy</h2>
+  <div class="terms">
+    <h3>What Rate Guard does</h3>
+    <p>Watches publicly available hotel prices for the hotels and dates you
+    choose, and messages you in Telegram when prices move. <b>What it never
+    does:</b> book, change, cancel, or pay for anything on your behalf. You are
+    solely responsible for every booking, cancellation, and rebooking decision
+    and for checking the final price at the provider before acting.</p>
+    <h3>Prices are observations, not offers</h3>
+    <p>Rates shown are best-effort samples of publicly available prices,
+    collected periodically. Providers change prices constantly and by context;
+    the price you see at checkout may differ. Rate Guard gives no price
+    guarantee, makes no booking, and is not travel insurance.</p>
+    <h3>Your data</h3>
+    <p>We store your Telegram user ID, the hotel/city/dates/price facts of what
+    you ask us to watch, your tier, and your savings ledger. Booking
+    confirmations you forward are parsed and immediately discarded &mdash; we
+    never store the message itself. We don&rsquo;t sell or share your data,
+    ever. Delete everything with /delete or by emailing the operator.</p>
+    <h3>Subscription</h3>
+    <p>Premium is SG$49/year, paid via Telegram Stars, non-recurring (you renew
+    manually). 14-day no-questions refund via /refund. After 14 days, no
+    refunds; premium simply expires at term.</p>
+    <h3>Service changes</h3>
+    <p>The service is provided as-is under active development; if it shuts down,
+    premium is pro-rated refunded by unused full months (see the 30-day notice
+    policy). Nothing here excludes liability we can&rsquo;t exclude under
+    Singapore law; governed by the laws of Singapore.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <main>
+    <div class="brandline">
+      <svg viewBox="0 0 64 64" width="22" height="22" role="img" aria-label="">
+        <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z"
+              fill="#0B1F3A"/>
+        <g transform="rotate(-20 43 40)">
+          <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
+          <circle cx="43" cy="34.5" r="2.7" fill="#fff"/>
+        </g>
+      </svg>
+      Rate Guard &mdash; Booked. Watched. Saved.
+    </div>
+    <p>Rate Guard is a price <b>monitoring</b> service. We never book, never
+    hold, never touch a reservation. Cancelling and rebooking are always your
+    actions, on your accounts.</p>
+    <p>Prices shown are best-effort observations of publicly available rates,
+    sampled periodically &mdash; the price you see at checkout may differ.
+    Verify at the provider before you act.</p>
+    <p>Privacy: your confirmation text is parsed and immediately discarded
+    &mdash; we never store the message itself. This page makes zero network
+    requests beyond itself; no analytics, no cookies, no tracking.</p>
+    <p><a class="footlink" href="https://t.me/rateguardian_bot">t.me/rateguardian_bot</a>
+    &middot; SG$49/year &middot; Telegram Stars &middot; 14-day refund</p>
+  </main>
+</footer>
+
+</body>
+</html>
