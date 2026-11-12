@@ -37,9 +37,13 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  margin: 0; background: var(--bg); color: var(--cream);
+  margin: 0; background-color: var(--bg); color: var(--cream);
   font: 16px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(1100px 540px at 50% -160px, rgba(23,178,106,.075), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(250,246,240,.02) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(90deg, rgba(250,246,240,.02) 0 1px, transparent 1px 64px);
 }
 .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 .narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
@@ -260,6 +264,118 @@ footer b { color: var(--ink2); }
   margin-bottom: 18px; color: var(--cream); font-weight: 700; font-size: 15px; }
 .footlink { color: var(--cream); font-weight: 600; }
 
+/* hero product shot — the Telegram chat in a CSS phone frame */
+.phonewrap { margin: 64px auto 0; display: flex; justify-content: center; position: relative; }
+.phonewrap::before { content: ""; position: absolute; inset: 8% 12% -6% 12%;
+  background: radial-gradient(60% 60% at 50% 42%, rgba(23,178,106,.16), transparent 70%);
+  filter: blur(8px); }
+.phone { position: relative; width: min(370px, 100%);
+  border: 1px solid rgba(250,246,240,.18); border-radius: 46px; padding: 10px;
+  background: linear-gradient(165deg, #101B2E, #0A1322 55%, #101B2E);
+  box-shadow: 0 40px 90px rgba(0,0,0,.55), inset 0 1px 0 rgba(250,246,240,.12); }
+.screen { border-radius: 37px; overflow: hidden; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, #101B2E, #0B1626 40%, #0D1930); }
+.tghead { display: flex; align-items: center; gap: 10px; padding: 26px 14px 12px;
+  background: rgba(7,16,33,.92); border-bottom: 1px solid rgba(250,246,240,.09); position: relative; }
+.tghead::before { content: ""; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+  width: 84px; height: 18px; border-radius: 999px; background: #060D1A; }
+.tgavatar { width: 34px; height: 34px; border-radius: 50%; background: #0F2C46;
+  display: flex; align-items: center; justify-content: center; flex: none; }
+.tgname { line-height: 1.25; }
+.tgname b { display: block; font-size: 14px; letter-spacing: -.01em; color: var(--cream); }
+.tgname span { font-size: 11.5px; color: var(--green-hi); }
+.chat { padding: 14px 10px 18px; display: flex; flex-direction: column; gap: 7px;
+  font-size: 12.5px; line-height: 1.55; }
+.daychip { align-self: center; font-size: 11px; color: var(--mute);
+  background: rgba(7,16,33,.75); border-radius: 999px; padding: 3px 12px; margin-bottom: 4px; }
+.msg { max-width: 86%; padding: 8px 12px; border-radius: 14px; color: var(--ink2); }
+.msg b { color: var(--cream); font-weight: 600; }
+.msg .meta { display: block; text-align: right; font-size: 10px;
+  color: rgba(250,246,240,.45); margin-top: 3px; }
+.msg.in { background: #16233A; border-bottom-left-radius: 5px; align-self: flex-start; }
+.msg.out { background: #2B5278; border-bottom-right-radius: 5px; align-self: flex-end;
+  color: var(--cream); }
+.fwdtag { display: block; font-size: 10.5px; font-weight: 600; color: #9CC4E8; margin-bottom: 3px; }
+.msg.alert { max-width: 94%; background: #16233A; border-bottom-left-radius: 5px;
+  align-self: flex-start; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; }
+.msg.alert .green { color: var(--green-hi); font-weight: 700; }
+.tgkb { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px;
+  font-family: var(--sans); }
+.tgkb span { border-radius: 9px; background: rgba(250,246,240,.07); padding: 8px 6px;
+  text-align: center; font-size: 11.5px; font-weight: 600; color: #BFD8EF; white-space: nowrap; }
+.tgkb .k1 { grid-column: 1 / -1; background: rgba(23,178,106,.16);
+  border: 1px solid rgba(23,178,106,.35); color: var(--green-hi); }
+.phonecap { text-align: center; color: var(--mute); font-size: 12.5px; margin: 18px 0 0; }
+@media (max-width: 479px) {
+  .phone { border-radius: 34px; padding: 7px; }
+  .screen { border-radius: 28px; }
+  .phonewrap::before { inset: 4% 2% -4% 2%; }
+}
+
+/* anatomy chart — 30 daily samples, the drop, the moment it fires */
+.chartpanel { background: var(--bg2); border: 1px solid var(--line);
+  border-radius: 14px; padding: clamp(14px, 3vw, 28px); margin-top: 44px; }
+.chartbox { position: relative; }
+.chartbox svg { display: block; width: 100%; height: auto; }
+.xlab { position: absolute; top: 91.5%; transform: translateX(-50%);
+  font-size: 10px; color: var(--mute); letter-spacing: .02em; }
+.xlab.xend { transform: translateX(-88%); }
+.ylab { position: absolute; left: 1.8%; transform: translateY(-115%);
+  font-size: 10px; color: var(--mute); }
+.anno { position: absolute; left: 3%; top: 3%; max-width: 88%;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #0E2036; border: 1px solid rgba(23,178,106,.45);
+  color: var(--green-hi); font-size: 12px; font-weight: 600;
+  border-radius: 14px; padding: 7px 14px;
+  box-shadow: 0 10px 30px rgba(6,19,12,.5); }
+@media (max-width: 560px) { .anno { font-size: 11px; padding: 6px 10px; }
+  .annox { display: none; } }
+.pulse { transform-box: fill-box; transform-origin: center; animation: ping 2.6s ease-out infinite; }
+@keyframes ping { 0% { transform: scale(.55); opacity: .75; }
+  70%, 100% { transform: scale(2.1); opacity: 0; } }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center;
+  margin-top: 18px; font-size: 12.5px; color: var(--ink2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 18px; border-top: 2.5px solid rgba(250,246,240,.85); border-radius: 2px; }
+.sw.g { border-top-color: var(--green); }
+.sw.dash { border-top-style: dashed; border-top-color: var(--amber); }
+.chartcap { color: var(--mute); font-size: 13px; max-width: 62ch;
+  margin: 16px auto 0; text-align: center; line-height: 1.7; }
+
+/* step minis — the real artifacts, small */
+.stepmini { margin: 4px 0 18px; background: var(--bg3);
+  border: 1px solid rgba(250,246,240,.12); border-radius: 9px;
+  padding: 12px 13px; font: 11px/1.75 var(--mono); color: var(--ink2);
+  white-space: pre-wrap; overflow: hidden; }
+.stepmini b { color: var(--cream); font-weight: 600; }
+.stepmini .green { color: var(--green-hi); font-weight: 700; }
+.stepmini .amber { color: var(--amber); font-weight: 700; }
+.minibars { display: block; width: 100%; height: auto; margin: 10px 0 2px; }
+
+/* wedding mode — the SG differentiator gets a real block */
+.wedgrid { display: grid; gap: 40px; }
+@media (min-width: 860px) { .wedgrid { grid-template-columns: 1.05fr .95fr;
+  gap: 56px; align-items: center; } }
+.wedlist { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 14px; }
+.wedlist li { font-size: 14.5px; color: var(--ink2); line-height: 1.6; }
+.wedlist b { color: var(--cream); }
+.wednote { color: var(--mute); font-size: 13px; margin: 22px 0 0; }
+.wedcardwrap { max-width: 520px; width: 100%; margin: 0 auto; }
+.wedcardwrap .caption { color: var(--mute); font-size: 13px; margin: 0 0 14px;
+  text-align: center; }
+.wedcard { background: var(--bg3); border: 1px solid rgba(245,166,35,.28);
+  border-radius: 10px; padding: 18px 20px; font: 13px/1.7 var(--mono);
+  white-space: pre-wrap; color: var(--ink2); box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+.wedcard b { color: var(--cream); font-weight: 600; }
+.wedcard .amber { color: var(--amber); font-weight: 700; }
+.wedbtns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; font-family: var(--sans); }
+.wedbtns span { border: 1px solid rgba(250,246,240,.16); border-radius: 999px;
+  padding: 6px 12px; font-size: 12px; color: var(--ink2); }
+.wedbtns .primary { background: var(--amber); border-color: var(--amber);
+  color: #161310; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none; opacity: .35; } }
+
 /* reveal — CSS-only scroll-driven animation (repo gate: no JS allowed).
    Elements are visible by default; browsers without animation-timeline
    simply never animate. */
@@ -321,6 +437,53 @@ footer b { color: var(--ink2); }
       <a class="pill pill-ghost" href="#pricing">See pricing</a>
     </div>
     <p class="heroplace rv d3">Free tier, one watch &middot; 4,893 SG &amp; SEA properties &middot; nothing to install</p>
+    <div class="phonewrap rv d3">
+      <div class="phone" role="img" aria-label="Telegram chat with the Rate Guardian bot: a forwarded booking confirmation is confirmed, then the rate-drop alert arrives with the exact rebook math">
+        <div class="screen">
+          <div class="tghead">
+            <div class="tgavatar">
+              <svg viewBox="0 0 64 64" width="20" height="20" aria-hidden="true">
+                <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z" fill="#FAF6F0"/>
+                <g transform="rotate(-20 43 40)">
+                  <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
+                  <circle cx="43" cy="34.5" r="2.7" fill="#0A1322"/>
+                </g>
+              </svg>
+            </div>
+            <div class="tgname"><b>Rate Guardian</b><span>bot &middot; online</span></div>
+          </div>
+          <div class="chat">
+            <span class="daychip" aria-hidden="true">Today</span>
+            <div class="msg out">
+              <span class="fwdtag">Forwarded message</span>
+              Shangri-La Rasa Sentosa, Sentosa<br>
+              Booking confirmed &middot; 12&ndash;15 Dec &middot; 2 rooms<br>
+              Total S$1,968.00 (S$328/night)
+              <span class="meta">20:14 &#10003;&#10003;</span>
+            </div>
+            <div class="msg in">
+              🛡️ Guarding <b>Shangri-La Rasa Sentosa</b> &middot; 12&ndash;15 Dec. I&rsquo;ll
+              message you if rebooking saves real money. You always cancel and rebook
+              yourself &mdash; I never touch your booking.
+              <span class="meta">20:14</span>
+            </div>
+            <div class="msg alert">
+              🛡️ <b>RATE DROP &mdash; Shangri-La Rasa Sentosa</b><br>
+              📅 You booked: 12&ndash;15 Dec &middot; 2 rooms<br>
+              <br>
+              Paid: S$328/night<br>
+              Now: <b>S$289</b>/night <span class="green">🔻S$39 (-12%)</span><br>
+              <br>
+              ✅ Cancel + rebook saves <span class="green">S$234 total</span><br>
+              &nbsp;&nbsp;(new 2-room total S$1,734 vs S$1,968 paid)
+              <span class="tgkb" aria-hidden="true"><span class="k1">🔎 Rebook at Agoda</span><span>📌 Keep booking</span><span>🔁 Re-check</span></span>
+              <span class="meta">07:32</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="phonecap rv d3">Your chat, the morning it saves: forward once &mdash; the bot does the watching.</p>
   </div>
 </section>
 
@@ -354,6 +517,58 @@ footer b { color: var(--ink2); }
       <p><sup>2</sup> No card, no trial clock. The free tier is the free tier.</p>
       <p><sup>3</sup> Monitoring only: cancelling and rebooking are always your actions, on your accounts.</p>
     </div>
+    <div class="showcase rv">
+      <p class="caption center">And every morning at 09:00, the digest &mdash; exactly as it lands:</p>
+      <div class="dealcard">📬 Rate Guard digest — 12 Nov
+🛡️ Shangri-La Rasa Sentosa · 12–15 Dec — <span class="drop">🔻 down to S$322/night</span> (paid S$328)
+🎯 Parkroyal Collection Marina Bay · 12–15 Dec — 💰 S$298/night — steady vs 30d median</div>
+    </div>
+  </div>
+</section>
+
+<section id="anatomy">
+  <div class="wrap">
+    <p class="kicker rv">Anatomy of a save</p>
+    <h2 class="rv">Thirty quiet days. One loud&nbsp;morning.</h2>
+    <p class="sub rv">A real watch, drawn from the alert above: the rate sits near what you
+    paid for weeks &mdash; then the sweep catches the fall, the gate passes
+    (&gt;5% <b>and</b> &gt;S$10), and the exact rebook math lands in your chat.</p>
+    <div class="chartpanel rv">
+      <div class="chartbox">
+        <svg viewBox="0 0 720 300" role="img" aria-label="Line chart of 30 daily sampled rates for one booked stay: steady near S$328 a night for 25 days, then a visible drop to S$289, where the alert fires">
+          <line x1="46" y1="107.3" x2="706" y2="107.3" stroke="rgba(250,246,240,.07)"/>
+          <line x1="46" y1="169.2" x2="706" y2="169.2" stroke="rgba(250,246,240,.07)"/>
+          <line x1="46" y1="231.1" x2="706" y2="231.1" stroke="rgba(250,246,240,.07)"/>
+          <line x1="46" y1="262" x2="706" y2="262" stroke="rgba(250,246,240,.16)"/>
+          <line x1="46" y1="133.3" x2="706" y2="133.3" stroke="rgba(245,166,35,.42)" stroke-dasharray="5 7"/>
+          <line x1="296" y1="44" x2="607" y2="197" stroke="rgba(23,178,106,.5)" stroke-dasharray="3 5"/>
+          <polygon points="46.0,82.6 68.8,73.3 91.5,85.7 114.3,76.4 137.0,67.1 159.8,79.5 182.6,88.8 205.3,76.4 228.1,85.7 250.8,73.3 273.6,64.0 296.3,76.4 319.1,85.7 341.9,79.5 364.6,67.1 387.4,76.4 410.1,82.6 432.9,73.3 455.7,85.7 478.4,91.9 501.2,85.7 523.9,76.4 546.7,88.8 569.4,79.5 592.2,73.3 615.0,203.2 637.7,197.0 660.5,209.4 683.2,190.9 706.0,200.1 706,262 46,262" fill="rgba(250,246,240,.05)"/>
+          <polyline points="46.0,82.6 68.8,73.3 91.5,85.7 114.3,76.4 137.0,67.1 159.8,79.5 182.6,88.8 205.3,76.4 228.1,85.7 250.8,73.3 273.6,64.0 296.3,76.4 319.1,85.7 341.9,79.5 364.6,67.1 387.4,76.4 410.1,82.6 432.9,73.3 455.7,85.7 478.4,91.9 501.2,85.7 523.9,76.4 546.7,88.8 569.4,79.5 592.2,73.3 615.0,203.2 637.7,197.0 660.5,209.4 683.2,190.9 706.0,200.1" fill="none" stroke="rgba(250,246,240,.85)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <polyline points="592.2,73.3 615.0,203.2 637.7,197.0 660.5,209.4 683.2,190.9 706.0,200.1" fill="none" stroke="#17B26A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle class="pulse" cx="615" cy="203.2" r="9" fill="none" stroke="#17B26A" stroke-width="2"/>
+          <circle cx="615" cy="203.2" r="4.5" fill="#17B26A"/>
+          <circle cx="46" cy="82.6" r="3" fill="none" stroke="rgba(250,246,240,.6)" stroke-width="1.5"/>
+        </svg>
+        <span class="ylab" style="top:35.8%" aria-hidden="true">S$320</span>
+        <span class="ylab" style="top:56.4%" aria-hidden="true">S$300</span>
+        <span class="ylab" style="top:77%" aria-hidden="true">S$280</span>
+        <span class="xlab" style="left:6.4%" aria-hidden="true">13 Nov</span>
+        <span class="xlab" style="left:28.5%" aria-hidden="true">20 Nov</span>
+        <span class="xlab" style="left:50.6%" aria-hidden="true">27 Nov</span>
+        <span class="xlab" style="left:72.8%" aria-hidden="true">4 Dec</span>
+        <span class="xlab xend" style="left:94.9%" aria-hidden="true">11 Dec</span>
+        <span class="anno">🔻 Rate Guard fires &mdash; S$289<span class="annox">, rebook math sent</span></span>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="sw"></i> paid S$328/night</span>
+        <span><i class="sw g"></i> now S$289/night</span>
+        <span><i class="sw dash"></i> alert gate: &gt;5% and &gt;S$10</span>
+      </div>
+    </div>
+    <p class="chartcap rv">30 daily samples for Shangri-La Rasa Sentosa &middot; 12&ndash;15 Dec &middot;
+    2 rooms. On 7 Dec the sweep sees S$289 &mdash; the drop clears the gate, so the exact
+    math (cancel + rebook, S$234 better) is pushed straight to your chat. Nothing is
+    booked, ever.</p>
   </div>
 </section>
 
@@ -366,6 +581,10 @@ footer b { color: var(--ink2); }
     <div class="steps">
       <div class="step rv">
         <div class="stepnum" aria-hidden="true">1</div>
+        <div class="stepmini" aria-hidden="true">✅ <b>Confirm your booking</b>
+🏨 <b>Shangri-La Rasa Sentosa</b> · SG
+📅 12–15 Dec (3 nights)
+💰 S$1,968.00 total (S$328/night)</div>
         <h3>Guard your booking</h3>
         <p>Forward your hotel booking confirmation to the bot. It reads hotel, city,
         dates and price &mdash; then discards the message itself. <b>Only those four
@@ -373,6 +592,12 @@ footer b { color: var(--ink2); }
       </div>
       <div class="step rv d1">
         <div class="stepnum" aria-hidden="true">2</div>
+        <div class="stepmini" aria-hidden="true">🎯 <b>Shangri-La Rasa Sentosa</b> — SG
+📅 12–15 Dec · 3 nights
+
+💰 Now: <b>S$298</b>/night <span class="green">🔻7%</span>
+📊 30d median: S$320/night
+🏆 Best: Agoda · S$298</div>
         <h3>We watch the rate daily</h3>
         <p>Rate Guardian watches public hotel prices for your hotel and dates, sampled
         every day. This is the same price engine behind the SG/SEA rate panel
@@ -380,6 +605,17 @@ footer b { color: var(--ink2); }
       </div>
       <div class="step rv d2">
         <div class="stepnum" aria-hidden="true">3</div>
+        <div class="stepmini" aria-hidden="true"><span class="green">🛡️ RATE DROP</span> — S$328 → <b>S$289</b>
+✅ Cancel + rebook saves <span class="green">S$234</span>
+<svg class="minibars" viewBox="0 0 240 108" role="img" aria-label="Savings ledger bar chart: S$61, then S$234, for S$295 saved in total">
+  <line x1="8" y1="100" x2="232" y2="100" stroke="rgba(250,246,240,.14)"/>
+  <rect x="26" y="83.5" width="44" height="16.5" rx="4" fill="#17B26A" opacity=".55"/>
+  <rect x="98" y="36.5" width="44" height="63.5" rx="4" fill="#17B26A" opacity=".75"/>
+  <rect x="170" y="20" width="44" height="80" rx="4" fill="#7DE0A8"/>
+  <text x="48" y="76" text-anchor="middle" font-size="11" fill="rgba(250,246,240,.75)">S$61</text>
+  <text x="120" y="29" text-anchor="middle" font-size="11" fill="rgba(250,246,240,.75)">S$234</text>
+  <text x="192" y="12" text-anchor="middle" font-size="11" font-weight="700" fill="#7DE0A8">S$295</text>
+</svg></div>
         <h3>Rate drops &rarr; exact rebook math</h3>
         <p>If rebooking saves real money &mdash; more than 5% <b>and</b> more than
         S$10 &mdash; you get the exact math and the cheapest link. You always cancel
@@ -396,6 +632,36 @@ Now:      S$289/night   <span class="drop">🔻S$39 (-12%)</span>
 
 ✅ <span class="save">Cancel + rebook saves S$234 total</span>
    (new 2-room total S$1,734 vs S$1,968 paid)<span class="dealbtns"><span class="primary">🔎 Rebook at Agoda</span><span>📌 Keep booking</span><span>🔁 Re-check</span></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wedding" id="wedding">
+  <div class="wrap wedgrid">
+    <div class="wedcopy">
+      <p class="kicker rv">Wedding mode &middot; Premium</p>
+      <h2 class="rv">The biggest booking you&rsquo;ll ever make, watched&nbsp;hardest.</h2>
+      <p class="sub rv">Hotels move wedding room-block rates quietly &mdash; a point here,
+      a surcharge there. Wedding mode watches your block the way a guard watches a
+      booking, against the one number that matters: <b>your budget</b>.</p>
+      <ul class="wedlist">
+        <li class="rv"><b>Rooms &times; dates &times; budget</b> &mdash; one watch covers the
+        whole block, 12 rooms or 2.</li>
+        <li class="rv d1"><b>Block-rate movement, daily</b> &mdash; the same price engine,
+        sampled on every room-night.</li>
+        <li class="rv d2"><b>⚠️ Breach alerts</b> &mdash; the morning your rate crosses
+        budget, one card arrives with the math.</li>
+      </ul>
+      <p class="wednote rv d2">Included in Premium &mdash; SG$49/year.</p>
+    </div>
+    <div class="wedcardwrap rv d1">
+      <p class="caption">The breach alert, exactly as it lands:</p>
+      <div class="wedcard" role="img" aria-label="Wedding mode alert: block rate S$348 a night, above the S$320 budget, flagged with a breach warning">
+💍 <b>Wedding — PARKROYAL Collection Marina Bay</b>
+📅 20–22 Mar · 12 rooms
+
+Block rate: <b>S$348</b>/night (was S$310)
+<span class="amber">⚠️ S$348 vs budget S$320</span><span class="wedbtns"><span class="primary">🔎 Check Agoda</span><span>📌 Keep booking</span><span>🔁 Re-check</span></span></div>
     </div>
   </div>
 </section>
