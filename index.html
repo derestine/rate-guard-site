@@ -3,161 +3,392 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A1322">
 <title>Rate Guardian — hotel rates drop after you book</title>
 <meta name="description" content="Rate Guardian watches hotel prices after you book and tells you when rebooking saves real money. Never books anything — you are always in control. Free to try.">
 <style>
+/* ── Rate Guardian landing · design DNA: plasma.org/personal
+   near-black navy field · warm cream ink · light serif display · pill buttons
+   cream pricing cards · hairline FAQ rows · one conversion action, repeated.
+   Zero external requests: system stacks only, all SVG inline. ────────── */
 :root {
   --rg-navy: #0B1F3A;
   --rg-green: #17B26A;
-  --rg-amber: #F5A623;
-  --rg-red: #E5484D;
-  --rg-ink: #1C2430;
-  --rg-mist: #EEF1F5;
+  --bg: #0A1322;
+  --bg2: #0E1B30;
+  --bg3: #071021;
+  --cream: #FAF6F0;
+  --ink2: rgba(250,246,240,.8);
+  --mute: rgba(250,246,240,.6);
+  --line: rgba(250,246,240,.14);
+  --green: var(--rg-green);
+  --green-hi: #7DE0A8;
+  --navy: var(--rg-navy);
+  --amber: #F5A623;
+  --card: #F3EEE4;
+  --card-ink: #1C2430;
+  --card-mute: #5F6672;
+  --card-line: #DCD5C6;
+  --serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  margin: 0; background: #fff; color: var(--rg-ink);
-  font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0; background: var(--bg); color: var(--cream);
+  font: 16px/1.65 var(--sans);
+  -webkit-font-smoothing: antialiased;
 }
-main { max-width: 680px; margin: 0 auto; padding: 0 20px; }
-section { margin: 56px 0; }
-h2 { font-size: 22px; line-height: 1.3; margin: 0 0 6px; letter-spacing: -0.02em; }
-.kicker { color: var(--rg-green); font-size: 13px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .08em; margin: 0 0 8px; }
-.sub { color: #5b6472; font-size: 14px; margin: 0 0 20px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
+section { padding: 72px 0; }
+@media (min-width: 720px) { section { padding: 104px 0; } }
+h1, h2, .statnum, .price {
+  font-family: var(--serif); font-weight: 300;
+}
+h2 {
+  font-size: clamp(1.9rem, 6.4vw, 3.1rem); line-height: 1.08;
+  letter-spacing: -.025em; margin: 0 0 14px;
+}
+.kicker {
+  color: var(--green-hi); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .18em; margin: 0 0 14px;
+}
+.sub { color: var(--mute); font-size: 15.5px; max-width: 56ch; margin: 0; }
+.center { text-align: center; }
+.center .sub { margin-left: auto; margin-right: auto; }
+:focus-visible { outline: 2px solid var(--green-hi); outline-offset: 3px; border-radius: 4px; }
 
-/* hero */
-.hero { background: var(--rg-navy); color: #fff; padding: 64px 0 56px; }
-.hero .kicker { color: #7de0a8; }
-.hero h1 { font-size: 40px; margin: 12px 0 4px; letter-spacing: -0.02em; }
-.tagline { color: #9fb2cf; font-weight: 600; letter-spacing: .04em;
-  font-size: 14px; margin: 0 0 18px; }
-.oneliner { font-size: 18px; line-height: 1.55; margin: 0 0 28px; color: #e8eef7; }
-.btn {
-  display: inline-block; background: var(--rg-green); color: #fff;
-  font-weight: 700; font-size: 16px; text-decoration: none;
-  padding: 14px 26px; border-radius: 12px;
+/* pills — plasma grammar: cream solid primary, hairline ghost secondary */
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 999px; padding: 14px 28px; font-size: 15px; font-weight: 600;
+  text-decoration: none; transition: transform .15s ease, filter .15s ease,
+  border-color .15s ease, background .15s ease;
 }
-.btn:hover { filter: brightness(1.06); }
-.heroplace { color: #8ea3c2; font-size: 12px; margin-top: 10px; }
+.pill:hover { transform: translateY(-1px); }
+.pill-cream { background: var(--cream); color: #161310; }
+.pill-cream:hover { filter: brightness(.96); }
+.pill-ghost { border: 1px solid var(--line); color: var(--cream); }
+.pill-ghost:hover { border-color: rgba(250,246,240,.36); background: rgba(250,246,240,.05); }
+.pill-dark { background: #161310; color: var(--cream); }
+.pill-outline-dark { border: 1px solid #33302B; color: var(--card-ink); }
+.pill-outline-dark:hover { border-color: var(--card-ink); background: rgba(22,19,16,.05); }
+.pill-sm { padding: 10px 20px; font-size: 13.5px; }
+
+/* top strip */
+.strip {
+  background: #0F2438; color: var(--ink2); text-align: center;
+  font-size: 12.5px; padding: 8px 16px; letter-spacing: .02em;
+}
+.strip b { color: var(--green-hi); font-weight: 600; }
+
+/* nav */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; max-width: 1080px; margin: 0 auto;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--cream); font-weight: 700; font-size: 15px;
+  letter-spacing: -.02em; text-decoration: none;
+}
+
+/* hero — giant light serif, centered */
+.hero { text-align: center; padding: 64px 0 72px; }
+@media (min-width: 720px) { .hero { padding: 104px 0 112px; } }
+.hero h1 {
+  font-size: clamp(2.7rem, 9.6vw, 4.6rem); line-height: 1.03;
+  letter-spacing: -.03em; margin: 0 auto 22px; max-width: 15ch;
+}
+.oneliner {
+  color: var(--ink2); font-size: clamp(1rem, 2.6vw, 1.15rem);
+  line-height: 1.6; max-width: 58ch; margin: 0 auto 30px;
+}
+.oneliner b { color: var(--cream); font-weight: 600; }
+.cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.heroplace { color: var(--mute); font-size: 13px; margin: 18px 0 0; }
+.heromark { margin-bottom: 26px; }
+
+/* ticker — "Booked · Watched · Saved" marquee */
+.ticker {
+  overflow: hidden; border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line); padding: 13px 0;
+}
+.track { display: flex; width: max-content; animation: tick 26s linear infinite; }
+.track span {
+  white-space: nowrap; padding-right: 3rem; font-size: 12px; font-weight: 600;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--mute);
+}
+@keyframes tick { to { transform: translateX(-50%); } }
+
+/* stats — big serif numbers + fine-print superscripts */
+.stats { padding-top: 72px; }
+.statgrid {
+  display: grid; gap: 40px 24px; margin-top: 44px;
+  grid-template-columns: 1fr; text-align: center;
+}
+@media (min-width: 720px) { .statgrid { grid-template-columns: repeat(3, 1fr); } }
+.statnum {
+  font-size: clamp(2.6rem, 8vw, 3.9rem); line-height: 1;
+  letter-spacing: -.02em; margin: 0;
+}
+.statnum sup {
+  font-size: .32em; color: var(--green-hi); font-family: var(--sans);
+  font-weight: 700; vertical-align: super; margin-left: 2px;
+}
+.statlabel { color: var(--ink2); font-size: 14.5px; max-width: 26ch; margin: 12px auto 0; }
+.footnotes { margin-top: 44px; font-size: 12.5px; color: var(--mute); line-height: 1.7; }
+.footnotes p { margin: 4px 0; }
+.footnotes sup { color: var(--green-hi); font-weight: 700; }
 
 /* steps */
-.step { border: 1px solid #d9dfe8; border-radius: 14px;
-  background: var(--rg-mist); padding: 20px 22px; margin: 0 0 16px; }
-.step h3 { font-size: 16px; margin: 0 0 6px; }
-.step p { margin: 0; font-size: 15px; color: #3c4553; }
-.stepnum { color: var(--rg-green); font-weight: 700; margin-right: 6px; }
+.steps { display: grid; gap: 16px; margin-top: 44px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+.step {
+  background: var(--bg2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 26px 24px 28px; position: relative;
+}
+.stepnum {
+  font-family: var(--serif); font-weight: 300; font-size: 52px; line-height: 1;
+  color: rgba(250,246,240,.22); letter-spacing: -.02em;
+}
+.step h3 { font-size: 16.5px; margin: 14px 0 8px; letter-spacing: -.01em; }
+.step p { margin: 0; font-size: 14.5px; color: var(--ink2); }
+.step p b { color: var(--cream); }
 
-/* the real deal-card mock (02-front-end §2, guard alert card) */
-.dealcard { background: #fff; border: 1px solid #d9dfe8; border-radius: 12px;
-  padding: 14px 16px; margin-top: 14px;
-  font: 13px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  white-space: pre-wrap; }
-.dealcard .drop { color: var(--rg-green); font-weight: 700; }
-.dealcard .save { color: var(--rg-green); font-weight: 700; }
-.dealbtns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
-  font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
-.dealbtns span { border: 1px solid #d9dfe8; border-radius: 8px;
-  padding: 5px 10px; font-size: 12px; color: var(--rg-ink); background: var(--rg-mist); }
-.dealbtns .primary { background: var(--rg-green); border-color: var(--rg-green);
-  color: #fff; font-weight: 600; }
+/* deal-card showcase — the real artifact, dark */
+.showcase { margin-top: 56px; }
+.showcase .caption { color: var(--mute); font-size: 13px; margin: 0 0 14px; }
+.dealcard {
+  background: var(--bg3); border: 1px solid rgba(250,246,240,.12);
+  border-radius: 10px; padding: 18px 20px; max-width: 560px; margin: 0 auto;
+  font: 13px/1.6 var(--mono); white-space: pre-wrap; color: var(--ink2);
+  box-shadow: 0 18px 50px rgba(0,0,0,.45);
+}
+.dealcard .drop { color: var(--green-hi); font-weight: 700; }
+.dealcard .save { color: var(--green-hi); font-weight: 700; }
+.dealbtns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
+  font-family: var(--sans); }
+.dealbtns span { border: 1px solid rgba(250,246,240,.16); border-radius: 999px;
+  padding: 6px 12px; font-size: 12px; color: var(--ink2); background: transparent; }
+.dealbtns .primary { background: var(--green); border-color: var(--green);
+  color: #06130C; font-weight: 600; }
 
-/* pricing */
-.plans { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 560px) { .plans { grid-template-columns: 1fr; } }
-.plan { border: 1px solid #d9dfe8; border-radius: 14px; padding: 20px 22px; }
-.plan.premium { border: 2px solid var(--rg-green); }
-.plan h3 { margin: 0; font-size: 16px; }
-.price { font-size: 26px; font-weight: 700; margin: 8px 0 2px; letter-spacing: -0.02em; }
-.price small { font-size: 14px; font-weight: 400; color: #5b6472; }
-.stars { display: inline-block; background: var(--rg-navy); color: #fff;
-  font-size: 12px; font-weight: 600; border-radius: 999px; padding: 3px 10px;
-  margin: 6px 0 12px; }
-.plan ul { margin: 0; padding: 0; list-style: none; font-size: 14px; }
-.plan li { padding: 5px 0; border-top: 1px solid var(--rg-mist); }
-.plan li:first-child { border-top: none; }
-.no { color: #98a1af; }
-.planfoot { font-size: 13px; color: #5b6472; margin: 14px 0 0; }
+/* pricing — cream cards on the dark field */
+.plans { display: grid; gap: 18px; margin-top: 48px; grid-template-columns: 1fr; }
+@media (min-width: 680px) { .plans { grid-template-columns: 1fr 1fr; gap: 22px; } }
+.plan {
+  background: var(--card); color: var(--card-ink); border-radius: 12px;
+  padding: 30px 28px; display: flex; flex-direction: column;
+}
+.plan.premium {
+  border: 2px solid var(--green);
+  background: linear-gradient(158deg, #F7F2E9 0%, #F0EBDE 48%, #DEE8DF 100%);
+}
+.tier-tag {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--card-mute); margin: 0 0 10px;
+}
+.plan.premium .tier-tag { color: #14683F; }
+.plan h3 { margin: 0; font-size: 19px; letter-spacing: -.01em; }
+.price { font-size: clamp(2.3rem, 6vw, 2.9rem); letter-spacing: -.02em;
+  line-height: 1; margin: 16px 0 4px; }
+.price small { font-size: 15px; font-weight: 400; color: var(--card-mute);
+  font-family: var(--sans); letter-spacing: 0; }
+.stars { display: inline-block; background: var(--navy); color: var(--cream);
+  font-size: 12px; font-weight: 600; border-radius: 999px; padding: 5px 12px;
+  margin: 10px 0 4px; align-self: flex-start; }
+.plan ul { margin: 18px 0 0; padding: 18px 0 0; list-style: none; font-size: 14.5px;
+  border-top: 1px solid var(--card-line); flex: 1; }
+.plan li { padding: 7px 0; color: var(--card-ink); }
+.plan li.no { color: #9AA0A9; }
+.plan .pill { margin-top: 22px; width: 100%; }
+.planfoot { font-size: 13.5px; color: var(--mute); max-width: 62ch;
+  margin: 26px auto 0; text-align: center; line-height: 1.7; }
 
-/* FAQ */
-details { border-bottom: 1px solid #e3e8ee; padding: 4px 0; }
-details summary { cursor: pointer; font-weight: 600; font-size: 15px;
-  padding: 10px 0; list-style: none; }
+/* trust — plasma "safe in your control" analog */
+.trust { background: var(--bg2); border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line); }
+.trustgrid { display: grid; gap: 16px; margin-top: 44px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .trustgrid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+.tcard { border: 1px solid var(--line); border-radius: 10px; padding: 24px 22px; }
+.tcard svg { margin-bottom: 14px; }
+.tcard h3 { font-size: 15.5px; margin: 0 0 8px; }
+.tcard p { margin: 0; font-size: 14px; color: var(--ink2); }
+
+/* mid CTA */
+.ctamid { text-align: center; padding: 88px 0; }
+.ctamid h2 { margin-bottom: 12px; }
+.ctamid .sub { margin-bottom: 30px; }
+
+/* FAQ — hairline rows */
+.faq h2 { margin-bottom: 8px; }
+.faq .sub { margin-bottom: 34px; }
+details { border-bottom: 1px solid var(--line); }
+details summary {
+  cursor: pointer; font-weight: 600; font-size: 15.5px; padding: 19px 0;
+  list-style: none; display: flex; justify-content: space-between;
+  align-items: center; gap: 16px; color: var(--cream);
+}
 details summary::-webkit-details-marker { display: none; }
-details summary::before { content: "›"; display: inline-block;
-  color: var(--rg-green); font-weight: 700; margin-right: 10px;
-  transform: rotate(90deg); }
-details[open] summary::before { transform: rotate(-90deg); }
-details p { margin: 4px 0 14px 26px; font-size: 15px; color: #3c4553; }
+details summary::after {
+  content: "+"; font-size: 22px; font-weight: 400; line-height: 1;
+  color: var(--green-hi); flex: none; transition: transform .25s ease;
+}
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin: 0 0 20px; font-size: 14.5px; color: var(--ink2); max-width: 62ch; }
 
-/* ToS */
-.terms { border: 1px solid #d9dfe8; border-radius: 14px;
-  padding: 24px 26px; background: var(--rg-mist); }
-.terms h3 { font-size: 16px; margin: 18px 0 6px; }
+/* terms — fine print panel */
+.terms {
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 26px 24px; background: rgba(14,27,48,.55);
+}
+@media (min-width: 720px) { .terms { padding: 34px 36px; } }
+.terms h3 { font-size: 14.5px; margin: 22px 0 8px; letter-spacing: -.01em; }
 .terms h3:first-child { margin-top: 0; }
-.terms p { font-size: 14px; color: #3c4553; margin: 0 0 10px; }
+.terms p { font-size: 13.5px; color: var(--ink2); margin: 0 0 10px; line-height: 1.7; }
+.terms b { color: var(--cream); }
 
 /* footer */
-footer { background: var(--rg-mist); border-top: 1px solid #d9dfe8;
-  padding: 32px 0 48px; margin-top: 64px; }
-footer p { font-size: 13px; color: #5b6472; margin: 0 0 10px; }
-footer .brandline { display: flex; align-items: center; gap: 10px;
-  margin-bottom: 14px; color: var(--rg-navy); font-weight: 700; }
-.footlink { color: var(--rg-navy); font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding: 44px 0 60px; }
+footer p { font-size: 13px; color: var(--mute); margin: 0 0 12px; max-width: 68ch; }
+footer b { color: var(--ink2); }
+.brandline { display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; color: var(--cream); font-weight: 700; font-size: 15px; }
+.footlink { color: var(--cream); font-weight: 600; }
+
+/* reveal — CSS-only scroll-driven animation (repo gate: no JS allowed).
+   Elements are visible by default; browsers without animation-timeline
+   simply never animate. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .rv { animation: rise linear both;
+      animation-timeline: view(); animation-range: entry 5% entry 55%; }
+  }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .track { animation: none; }
+  .rv { animation: none; opacity: 1; }
+  .pill:hover { transform: none; }
+}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <main>
-    <svg viewBox="0 0 64 64" width="72" height="72" role="img"
-         aria-label="Rate Guardian mark — a shield carrying a price tag">
-      <!-- 04-design §2: rounded shield (two arcs + flat top), price tag in the
-           lower-right quadrant rotated -20°, string trailing off the shield edge -->
-      <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z"
-            fill="#0B1F3A"/>
-      <path d="M45 33 C52 29 55 22 54 15" stroke="#17B26A" stroke-width="1.6"
-            fill="none" stroke-linecap="round"/>
+<div class="strip">🛡️ Price-drop protection for <b>booked</b> travel &mdash; SG &amp; SEA first · <b>never books anything</b></div>
+
+<header class="nav">
+  <a class="brand" href="#top" aria-label="Rate Guardian — back to top">
+    <svg viewBox="0 0 64 64" width="22" height="22" role="img" aria-label="Rate Guardian mark — shield carrying a price tag">
+      <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z" fill="currentColor"/>
       <g transform="rotate(-20 43 40)">
-        <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
-        <circle cx="43" cy="34.5" r="2.7" fill="#fff"/>
+        <rect x="34" y="28" width="18" height="25" rx="4.5" fill="currentColor" opacity=".55"/>
+        <circle cx="43" cy="34.5" r="2.7" fill="#0A1322"/>
       </g>
     </svg>
-    <p class="kicker">Booked. Watched. Saved.</p>
-    <h1>Rate Guardian</h1>
-    <p class="oneliner">Your booking isn&rsquo;t done when you pay. Rates drop after
-    you book &mdash; Rate Guardian watches, and tells you when rebooking saves real
-    money.</p>
-    <a class="btn" href="https://t.me/rateguardian_bot">Open in Telegram &rarr;</a>
-    <p class="heroplace">Free tier, one watch · SG hotels &amp; SEA · never books anything</p>
-  </main>
+    Rate Guardian
+  </a>
+  <a class="pill pill-cream pill-sm" href="https://t.me/rateguardian_bot">Open in Telegram</a>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="heromark rv">
+      <svg viewBox="0 0 64 64" width="84" height="84" role="img"
+           aria-label="Rate Guardian mark — a cream shield carrying a green price tag">
+        <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z" fill="#FAF6F0"/>
+        <path d="M45 33 C52 29 55 22 54 15" stroke="#17B26A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <g transform="rotate(-20 43 40)">
+          <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
+          <circle cx="43" cy="34.5" r="2.7" fill="#0A1322"/>
+        </g>
+      </svg>
+    </div>
+    <p class="kicker rv">Booked. Watched. Saved.</p>
+    <h1 class="rv">Hotels cut rates after you&nbsp;book.</h1>
+    <p class="oneliner rv d1">Your booking isn&rsquo;t done when you pay. Rate Guardian
+    watches your hotel&rsquo;s price every day you&rsquo;re booked &mdash; and tells you,
+    with exact rebook math, the moment paying again saves real money.
+    <b>It never books anything; you always stay in control.</b></p>
+    <div class="cta-row rv d2">
+      <a class="pill pill-cream" href="https://t.me/rateguardian_bot">Open in Telegram &rarr;</a>
+      <a class="pill pill-ghost" href="#pricing">See pricing</a>
+    </div>
+    <p class="heroplace rv d3">Free tier, one watch &middot; 4,893 SG &amp; SEA properties &middot; nothing to install</p>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="track">
+    <span>Booked &middot; Watched &middot; Saved &middot; Never books &middot; Watches daily &middot; SG &amp; SEA &middot; Booked &middot; Watched &middot; Saved &middot; Never books &middot; Watches daily &middot; SG &amp; SEA &middot;&nbsp;</span>
+    <span>Booked &middot; Watched &middot; Saved &middot; Never books &middot; Watches daily &middot; SG &amp; SEA &middot; Booked &middot; Watched &middot; Saved &middot; Never books &middot; Watches daily &middot; SG &amp; SEA &middot;&nbsp;</span>
+  </div>
 </div>
 
-<main>
+<section class="stats" id="numbers">
+  <div class="wrap center">
+    <p class="kicker rv">The numbers, plainly</p>
+    <h2 class="rv">What watching looks like.</h2>
+    <div class="statgrid">
+      <div class="rv">
+        <p class="statnum">4,893<sup>1</sup></p>
+        <p class="statlabel">hotels &amp; resorts under daily watch across SG &amp; SEA</p>
+      </div>
+      <div class="rv d1">
+        <p class="statnum">S$0<sup>2</sup></p>
+        <p class="statlabel">to start &mdash; free tier, one watch, daily digest</p>
+      </div>
+      <div class="rv d2">
+        <p class="statnum">0<sup>3</sup></p>
+        <p class="statlabel">bookings made, changed or touched. Ever.</p>
+      </div>
+    </div>
+    <div class="footnotes rv">
+      <p><sup>1</sup> Sampled daily against public rates &mdash; the same price engine behind the SG/SEA rate panel.</p>
+      <p><sup>2</sup> No card, no trial clock. The free tier is the free tier.</p>
+      <p><sup>3</sup> Monitoring only: cancelling and rebooking are always your actions, on your accounts.</p>
+    </div>
+  </div>
+</section>
 
 <section id="how-it-works">
-  <p class="kicker">How it works</p>
-  <h2>Three steps. No app to install.</h2>
-  <p class="sub">Everything happens in a Telegram chat &mdash; where your travel
-  plans already live.</p>
-  <div class="step">
-    <h3><span class="stepnum">1</span>Guard your booking</h3>
-    <p>Forward your hotel booking confirmation to the bot. It reads hotel, city,
-    dates and price &mdash; then discards the message itself. Only those four
-    facts are kept.</p>
-  </div>
-  <div class="step">
-    <h3><span class="stepnum">2</span>We watch the rate daily</h3>
-    <p>Rate Guardian watches public hotel prices for your hotel and dates, sampled
-    every day. This is the same price engine behind the SG/SEA rate panel
-    (4,893 properties).</p>
-  </div>
-  <div class="step">
-    <h3><span class="stepnum">3</span>Rate drops &rarr; exact rebook math</h3>
-    <p>If rebooking saves real money &mdash; more than 5% and more than S$10
-    &mdash; you get the exact math and the cheapest link. You always cancel and
-    rebook yourself; Rate Guardian never touches your reservation.</p>
-    <div class="dealcard">🛡️ RATE DROP — Shangri-La Rasa Sentosa
+  <div class="wrap">
+    <p class="kicker rv">How it works</p>
+    <h2 class="rv">Three steps. No app to&nbsp;install.</h2>
+    <p class="sub rv">Everything happens in a Telegram chat &mdash; where your travel
+    plans already live.</p>
+    <div class="steps">
+      <div class="step rv">
+        <div class="stepnum" aria-hidden="true">1</div>
+        <h3>Guard your booking</h3>
+        <p>Forward your hotel booking confirmation to the bot. It reads hotel, city,
+        dates and price &mdash; then discards the message itself. <b>Only those four
+        facts are kept.</b></p>
+      </div>
+      <div class="step rv d1">
+        <div class="stepnum" aria-hidden="true">2</div>
+        <h3>We watch the rate daily</h3>
+        <p>Rate Guardian watches public hotel prices for your hotel and dates, sampled
+        every day. This is the same price engine behind the SG/SEA rate panel
+        (4,893 properties).</p>
+      </div>
+      <div class="step rv d2">
+        <div class="stepnum" aria-hidden="true">3</div>
+        <h3>Rate drops &rarr; exact rebook math</h3>
+        <p>If rebooking saves real money &mdash; more than 5% <b>and</b> more than
+        S$10 &mdash; you get the exact math and the cheapest link. You always cancel
+        and rebook yourself; <b>Rate Guardian never touches your reservation.</b></p>
+      </div>
+    </div>
+    <div class="showcase rv">
+      <p class="caption center">The alert, exactly as it lands in your chat:</p>
+      <div class="dealcard">🛡️ RATE DROP — Shangri-La Rasa Sentosa
 📅 You booked: 12–15 Dec · 2 rooms
 
 Paid:     S$328/night
@@ -165,151 +396,202 @@ Now:      S$289/night   <span class="drop">🔻S$39 (-12%)</span>
 
 ✅ <span class="save">Cancel + rebook saves S$234 total</span>
    (new 2-room total S$1,734 vs S$1,968 paid)<span class="dealbtns"><span class="primary">🔎 Rebook at Agoda</span><span>📌 Keep booking</span><span>🔁 Re-check</span></span></div>
+    </div>
   </div>
 </section>
 
 <section id="pricing">
-  <p class="kicker">Pricing</p>
-  <h2>Free to try. SG$49/year when it earns it.</h2>
-  <p class="sub">No monthly plan. No free trial of premium &mdash; the yearly
-  price is the honest one. Pay in-chat with Telegram Stars.</p>
-  <div class="plans">
-    <div class="plan">
-      <h3>Free</h3>
-      <div class="price">S$0 <small>forever</small></div>
-      <ul>
-        <li>1 active watch</li>
-        <li>Alerts batched &mdash; next 09:00 SGT daily digest</li>
-        <li>✅ Guard (post-booking rebook math)</li>
-        <li class="no">❌ Wedding mode</li>
-        <li class="no">❌ Weekly savings report</li>
-        <li>Manual &ldquo;re-check now&rdquo;: 1/day</li>
-        <li>✅ /savings ledger card</li>
-      </ul>
+  <div class="wrap">
+    <p class="kicker rv">Pricing</p>
+    <h2 class="rv">Free to try. SG$49 a year when it earns&nbsp;it.</h2>
+    <p class="sub rv">No monthly plan. No free trial of premium &mdash; the yearly
+    price is the honest one. Pay in-chat with Telegram Stars.</p>
+    <div class="plans">
+      <div class="plan rv">
+        <p class="tier-tag">One watch</p>
+        <h3>Free</h3>
+        <div class="price">S$0 <small>forever</small></div>
+        <ul>
+          <li>1 active watch</li>
+          <li>Alerts batched &mdash; next 09:00 SGT daily digest</li>
+          <li>✅ Guard (post-booking rebook math)</li>
+          <li class="no">❌ Wedding mode</li>
+          <li class="no">❌ Weekly savings report</li>
+          <li>Manual &ldquo;re-check now&rdquo;: 1/day</li>
+          <li>✅ /savings ledger card</li>
+        </ul>
+        <a class="pill pill-outline-dark" href="https://t.me/rateguardian_bot">Start free</a>
+      </div>
+      <div class="plan premium rv d1">
+        <p class="tier-tag">Unlimited watches</p>
+        <h3>Premium</h3>
+        <div class="price">SG$49 <small>/year</small></div>
+        <span class="stars">★ 2,600 Stars · paid in-chat</span>
+        <ul>
+          <li>Unlimited watches <span class="no">(soft cap 10/user)</span></li>
+          <li>Instant alerts &mdash; pushed the moment a sweep detects the drop</li>
+          <li>✅ Guard (post-booking rebook math)</li>
+          <li>✅ Wedding mode (rooms × dates × budget)</li>
+          <li>✅ Weekly savings report (Mon 09:00 SGT)</li>
+          <li>Manual &ldquo;re-check now&rdquo;: 5/day</li>
+          <li>✅ /savings ledger card</li>
+        </ul>
+        <a class="pill pill-dark" href="https://t.me/rateguardian_bot">Get Premium</a>
+      </div>
     </div>
-    <div class="plan premium">
-      <h3>Premium</h3>
-      <div class="price">SG$49 <small>/year</small></div>
-      <span class="stars">★ 2,600 Stars · paid in-chat</span>
-      <ul>
-        <li>Unlimited watches <span class="no">(soft cap 10/user)</span></li>
-        <li>Instant alerts &mdash; pushed the moment a sweep detects the drop</li>
-        <li>✅ Guard (post-booking rebook math)</li>
-        <li>✅ Wedding mode (rooms × dates × budget)</li>
-        <li>✅ Weekly savings report (Mon 09:00 SGT)</li>
-        <li>Manual &ldquo;re-check now&rdquo;: 5/day</li>
-        <li>✅ /savings ledger card</li>
-      </ul>
-    </div>
+    <p class="planfoot rv">One-time yearly charge, no auto-renew (you get a renewal
+    nudge 7 days before expiry). 14-day no-questions refund: message the bot with
+    /refund in your first 14 days and the full SG$49 comes back the way you paid.
+    After 14 days, no refunds &mdash; cancel anytime and premium simply expires at
+    the paid-up date.</p>
   </div>
-  <p class="planfoot">One-time yearly charge, no auto-renew (you get a renewal
-  nudge 7 days before expiry). 14-day no-questions refund: message the bot with
-  /refund in your first 14 days and the full SG$49 comes back the way you paid.
-  After 14 days, no refunds &mdash; cancel anytime and premium simply expires at
-  the paid-up date.</p>
 </section>
 
-<section id="faq">
-  <p class="kicker">FAQ</p>
-  <h2>What it does &mdash; and what it never does.</h2>
-  <details open>
-    <summary>Does Rate Guardian book or change my reservation?</summary>
-    <p>Never. It watches prices and tells you. Cancelling and rebooking is
-    always your action, on your accounts.</p>
-  </details>
-  <details>
-    <summary>How accurate are the prices?</summary>
-    <p>They&rsquo;re real observed rates from public search, sampled daily &mdash;
-    but hotels/OTAs show different prices by moment, room, and device. Treat our
-    numbers as a strong signal, then verify at the link before you act.</p>
-  </details>
-  <details>
-    <summary>What do I forward?</summary>
-    <p>Any hotel booking confirmation text (email, app message). We read hotel,
-    city, dates and price, then discard the message itself &mdash; we keep only
-    those four facts.</p>
-  </details>
-  <details>
-    <summary>What if rates drop but the hotel charges cancellation fees?</summary>
-    <p>The rebook math shows gross savings only; check your rate&rsquo;s
-    cancellation terms before acting (we link them out; flexible rates are where
-    this shines).</p>
-  </details>
-  <details>
-    <summary>Free vs paid?</summary>
-    <p>Free: one watch, alerts batched daily. SG$49/yr: instant alerts, ten
-    watches, wedding mode, weekly savings report.</p>
-  </details>
-  <details>
-    <summary>How do I pay?</summary>
-    <p>Telegram Stars in-chat (2 taps). 14-day no-questions refund.</p>
-  </details>
-  <details>
-    <summary>Which hotels/cities?</summary>
-    <p>4,893 SG/SEA properties today; if yours is missing, /watch suggests the
-    closest matches and coverage grows weekly.</p>
-  </details>
-  <details>
-    <summary>Do you sell my data?</summary>
-    <p>No. We store your Telegram id, your watch facts, and your savings.
-    That&rsquo;s the entire database of &ldquo;you&rdquo;.</p>
-  </details>
-  <details>
-    <summary>Why a Telegram bot?</summary>
-    <p>Because your rates belong where your group chats already are &mdash; no
-    app to install, nothing to remember.</p>
-  </details>
-  <details>
-    <summary>What it is NOT</summary>
-    <p>Not a booking agent, not a chat concierge, not price-guarantee insurance.
-    A watchful friend with a spreadsheet.</p>
-  </details>
+<section class="trust" id="control">
+  <div class="wrap">
+    <p class="kicker rv">You&rsquo;re in control</p>
+    <h2 class="rv">Your booking stays&nbsp;yours.</h2>
+    <p class="sub rv">Rate Guardian is a watchful friend with a spreadsheet &mdash;
+    not an agent, not insurance.</p>
+    <div class="trustgrid">
+      <div class="tcard rv">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7DE0A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>It never books</h3>
+        <p>Not a booking agent. Cancelling and rebooking are always your actions,
+        on your accounts. Rate Guardian never holds, pays, or touches a
+        reservation.</p>
+      </div>
+      <div class="tcard rv d1">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7DE0A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <h3>Your data is yours</h3>
+        <p>We store your Telegram id, your watch facts, and your savings. That&rsquo;s
+        the entire database of &ldquo;you&rdquo;. Delete everything with /delete.</p>
+      </div>
+      <div class="tcard rv d2">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7DE0A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        <h3>Prices are observations</h3>
+        <p>Real observed rates from public search, sampled daily &mdash; never an
+        offer. Treat our numbers as a strong signal, then verify at the link
+        before you act.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ctamid">
+  <div class="wrap center">
+    <h2 class="rv">Start watching in&nbsp;minutes.</h2>
+    <p class="sub rv">Open the bot, forward a booking confirmation, and the watch
+    begins. No app, no account, no card.</p>
+    <div class="rv d1">
+      <a class="pill pill-cream" href="https://t.me/rateguardian_bot">Open in Telegram &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap narrow">
+    <p class="kicker rv">FAQ</p>
+    <h2 class="rv">A few straight answers.</h2>
+    <p class="sub rv">What it does &mdash; and what it never does.</p>
+    <details open class="rv">
+      <summary>Does Rate Guardian book or change my reservation?</summary>
+      <p>Never. It watches prices and tells you. Cancelling and rebooking is
+      always your action, on your accounts.</p>
+    </details>
+    <details class="rv">
+      <summary>How accurate are the prices?</summary>
+      <p>They&rsquo;re real observed rates from public search, sampled daily &mdash;
+      but hotels/OTAs show different prices by moment, room, and device. Treat our
+      numbers as a strong signal, then verify at the link before you act.</p>
+    </details>
+    <details class="rv">
+      <summary>What do I forward?</summary>
+      <p>Any hotel booking confirmation text (email, app message). We read hotel,
+      city, dates and price, then discard the message itself &mdash; we keep only
+      those four facts.</p>
+    </details>
+    <details class="rv">
+      <summary>What if rates drop but the hotel charges cancellation fees?</summary>
+      <p>The rebook math shows gross savings only; check your rate&rsquo;s
+      cancellation terms before acting (we link them out; flexible rates are where
+      this shines).</p>
+    </details>
+    <details class="rv">
+      <summary>Free vs paid?</summary>
+      <p>Free: one watch, alerts batched daily. SG$49/yr: instant alerts, ten
+      watches, wedding mode, weekly savings report.</p>
+    </details>
+    <details class="rv">
+      <summary>How do I pay?</summary>
+      <p>Telegram Stars in-chat (2 taps). 14-day no-questions refund.</p>
+    </details>
+    <details class="rv">
+      <summary>Which hotels/cities?</summary>
+      <p>4,893 SG/SEA properties today; if yours is missing, /watch suggests the
+      closest matches and coverage grows weekly.</p>
+    </details>
+    <details class="rv">
+      <summary>Do you sell my data?</summary>
+      <p>No. We store your Telegram id, your watch facts, and your savings.
+      That&rsquo;s the entire database of &ldquo;you&rdquo;.</p>
+    </details>
+    <details class="rv">
+      <summary>Why a Telegram bot?</summary>
+      <p>Because your rates belong where your group chats already are &mdash; no
+      app to install, nothing to remember.</p>
+    </details>
+    <details class="rv">
+      <summary>What it is NOT</summary>
+      <p>Not a booking agent, not a chat concierge, not price-guarantee insurance.
+      A watchful friend with a spreadsheet.</p>
+    </details>
+  </div>
 </section>
 
 <section id="terms">
-  <p class="kicker">The fine print, in plain words</p>
-  <h2>Terms of Service &amp; Privacy</h2>
-  <div class="terms">
-    <h3>What Rate Guardian does</h3>
-    <p>Watches publicly available hotel prices for the hotels and dates you
-    choose, and messages you in Telegram when prices move. <b>What it never
-    does:</b> book, change, cancel, or pay for anything on your behalf. You are
-    solely responsible for every booking, cancellation, and rebooking decision
-    and for checking the final price at the provider before acting.</p>
-    <h3>Prices are observations, not offers</h3>
-    <p>Rates shown are best-effort samples of publicly available prices,
-    collected periodically. Providers change prices constantly and by context;
-    the price you see at checkout may differ. Rate Guardian gives no price
-    guarantee, makes no booking, and is not travel insurance.</p>
-    <h3>Your data</h3>
-    <p>We store your Telegram user ID, the hotel/city/dates/price facts of what
-    you ask us to watch, your tier, and your savings ledger. Booking
-    confirmations you forward are parsed and immediately discarded &mdash; we
-    never store the message itself. We don&rsquo;t sell or share your data,
-    ever. Delete everything with /delete or by emailing the operator.</p>
-    <h3>Subscription</h3>
-    <p>Premium is SG$49/year, paid via Telegram Stars, non-recurring (you renew
-    manually). 14-day no-questions refund via /refund. After 14 days, no
-    refunds; premium simply expires at term.</p>
-    <h3>Service changes</h3>
-    <p>The service is provided as-is under active development; if it shuts down,
-    premium is pro-rated refunded by unused full months (see the 30-day notice
-    policy). Nothing here excludes liability we can&rsquo;t exclude under
-    Singapore law; governed by the laws of Singapore.</p>
+  <div class="wrap narrow">
+    <p class="kicker rv">The fine print, in plain words</p>
+    <h2 class="rv">Terms of Service &amp;&nbsp;Privacy</h2>
+    <div class="terms rv">
+      <h3>What Rate Guardian does</h3>
+      <p>Watches publicly available hotel prices for the hotels and dates you
+      choose, and messages you in Telegram when prices move. <b>What it never
+      does:</b> book, change, cancel, or pay for anything on your behalf. You are
+      solely responsible for every booking, cancellation, and rebooking decision
+      and for checking the final price at the provider before acting.</p>
+      <h3>Prices are observations, not offers</h3>
+      <p>Rates shown are best-effort samples of publicly available prices,
+      collected periodically. Providers change prices constantly and by context;
+      the price you see at checkout may differ. Rate Guardian gives no price
+      guarantee, makes no booking, and is not travel insurance.</p>
+      <h3>Your data</h3>
+      <p>We store your Telegram user ID, the hotel/city/dates/price facts of what
+      you ask us to watch, your tier, and your savings ledger. Booking
+      confirmations you forward are parsed and immediately discarded &mdash; we
+      never store the message itself. We don&rsquo;t sell or share your data,
+      ever. Delete everything with /delete or by emailing the operator.</p>
+      <h3>Subscription</h3>
+      <p>Premium is SG$49/year, paid via Telegram Stars, non-recurring (you renew
+      manually). 14-day no-questions refund via /refund. After 14 days, no
+      refunds; premium simply expires at term.</p>
+      <h3>Service changes</h3>
+      <p>The service is provided as-is under active development; if it shuts down,
+      premium is pro-rated refunded by unused full months (see the 30-day notice
+      policy). Nothing here excludes liability we can&rsquo;t exclude under
+      Singapore law; governed by the laws of Singapore.</p>
+    </div>
   </div>
 </section>
 
-</main>
-
 <footer>
-  <main>
+  <div class="wrap">
     <div class="brandline">
       <svg viewBox="0 0 64 64" width="22" height="22" role="img" aria-label="">
-        <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z"
-              fill="#0B1F3A"/>
+        <path d="M14 8 H50 V26 C50 41 42.5 51 32 57 C21.5 51 14 41 14 26 Z" fill="currentColor"/>
         <g transform="rotate(-20 43 40)">
-          <rect x="34" y="28" width="18" height="25" rx="4.5" fill="#17B26A"/>
-          <circle cx="43" cy="34.5" r="2.7" fill="#fff"/>
+          <rect x="34" y="28" width="18" height="25" rx="4.5" fill="currentColor" opacity=".55"/>
+          <circle cx="43" cy="34.5" r="2.7" fill="#0A1322"/>
         </g>
       </svg>
       Rate Guardian &mdash; Booked. Watched. Saved.
@@ -325,7 +607,7 @@ Now:      S$289/night   <span class="drop">🔻S$39 (-12%)</span>
     requests beyond itself; no analytics, no cookies, no tracking.</p>
     <p><a class="footlink" href="https://t.me/rateguardian_bot">t.me/rateguardian_bot</a>
     &middot; SG$49/year &middot; Telegram Stars &middot; 14-day refund</p>
-  </main>
+  </div>
 </footer>
 
 </body>
